@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <h1>Станица с постами</h1>
+    <my-input v-model="searchQuery" placeholder="Поиск..."></my-input>
     <div class="app__btns">
       <my-button @click="showDialog">Создать пост</my-button>
       <my-select v-model="selectedSort" :options="sortOptions"></my-select>
@@ -9,11 +10,11 @@
       <post-form @create="createPost"></post-form>
     </my-dialog>
     <post-list
-      :posts="posts"
+      :posts="sortedAndSearchedPosts"
       @remove="removePost"
       v-if="!isPostsLoading"
     ></post-list>
-    <div>Идет загрузка...</div>
+    <div v-else>Идет загрузка...</div>
   </div>
 </template>
 
@@ -34,6 +35,7 @@ export default {
       dialogVisible: false,
       isPostsLoading: false,
       selectedSort: "",
+      searchQuery: "",
       sortOptions: [
         { value: "title", name: "По названию" },
         { value: "body", name: "По содержанию" },
@@ -68,11 +70,16 @@ export default {
   mounted() {
     this.fetchPosts();
   },
-  watch: {
-    selectedSort(newValue) {
-      this.posts.sort((post1, post2) => {
-        return post1[newValue]?.localeCompare(post2[newValue]);
-      });
+  computed: {
+    sortedPost() {
+      return [...this.posts].sort((post1, post2) =>
+        post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
+      );
+    },
+    sortedAndSearchedPosts() {
+      return this.sortedPost.filter((post) =>
+        post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     },
   },
 };
