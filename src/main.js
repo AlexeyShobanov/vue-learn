@@ -1,4 +1,13 @@
 import { createApp } from "vue";
-import App from "./App.vue";
+import App from "./App";
+import components from "@/components/UI";
 
-createApp(App).mount("#app");
+// App - корневой компонет
+const app = createApp(App);
+
+//глобальная регистрация компонентов
+components.forEach((component) => {
+  app.component(component.name, component);
+});
+
+app.mount("#app");
