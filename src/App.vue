@@ -15,17 +15,11 @@
       v-if="!isPostsLoading"
     ></post-list>
     <div v-else>Идет загрузка...</div>
-    <div class="page__wrapper">
-      <div
-        v-for="pageNumber in totalPage"
-        :key="pageNumber"
-        class="page"
-        :class="{ 'current-page': page === pageNumber }"
-        @click="changePage(pageNumber)"
-      >
-        {{ pageNumber }}
-      </div>
-    </div>
+    <my-pagination
+      :page="page"
+      :total-page="totalPage"
+      @changepage="changePage"
+    ></my-pagination>
   </div>
 </template>
 
@@ -34,9 +28,11 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
 import axios from "axios";
+import MyPagination from "@/components/UI/MyPagination";
 
 export default {
   components: {
+    MyPagination,
     PostList,
     PostForm,
   },
@@ -48,6 +44,7 @@ export default {
       selectedSort: "",
       searchQuery: "",
       page: 1,
+      pageNumber: 1,
       limit: 10,
       totalPage: 0,
       sortOptions: [
