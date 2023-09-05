@@ -15,11 +15,7 @@
       v-if="!isPostsLoading"
     ></post-list>
     <div v-else>Идет загрузка...</div>
-    <my-pagination
-      :page="page"
-      :total-page="totalPage"
-      @changepage="changePage"
-    ></my-pagination>
+    <div ref="observer" class="observer"></div>
   </div>
 </template>
 
@@ -28,11 +24,9 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
 import axios from "axios";
-import MyPagination from "@/components/UI/MyPagination";
 
 export default {
   components: {
-    MyPagination,
     PostList,
     PostForm,
   },
@@ -86,13 +80,43 @@ export default {
         this.isPostsLoading = false;
       }
     },
-    changePage(pageNumber) {
-      this.page = pageNumber;
-      this.fetchPosts();
+    async loadMorePosts() {
+      this.page += 1;
+      try {
+        const response = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts",
+          {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            },
+          }
+        );
+        this.totalPage = Math.ceil(
+          response.headers["x-total-count"] / this.limit
+        );
+        this.posts = [...this.posts, ...response.data];
+      } catch (e) {
+        alert("Ошибка");
+      }
     },
   },
   mounted() {
     this.fetchPosts();
+
+    const options = {
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+    const callback = (entries, observer) => {
+      if (entries[0].isIntersecting && this.page < this.totalPage) {
+        this.loadMorePosts();
+        // console.log(observer);
+        return observer;
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPost() {
@@ -126,19 +150,8 @@ export default {
   justify-content: space-between;
 }
 
-.page__wrapper {
-  display: flex;
-  margin-top: 15px;
-}
-
-.page {
-  border: 1px solid black;
-  padding: 10px;
-  margin-left: 5px;
-}
-
-.current-page {
-  border: 1px solid teal;
-  background: aquamarine;
+.observer {
+  height: 10px;
+  /*background: teal;*/
 }
 </style>
