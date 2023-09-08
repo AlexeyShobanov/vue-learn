@@ -9,7 +9,7 @@
     <!--      type="text"-->
     <!--      placeholder="Название"-->
     <!--    />-->
-    <my-input v-model="post.title" placeholder="Название" />
+    <my-input v-focus v-model="post.title" placeholder="Название" />
     <my-input v-model="post.body" placeholder="Описание" />
     <my-button @click="createPost" class="form-btn">Создать</my-button>
   </form>
