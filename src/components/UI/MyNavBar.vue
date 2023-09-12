@@ -7,7 +7,12 @@
       <my-button style="margin-right: 15px" @click="this.$router.push('/posts')"
         >Посты</my-button
       >
-      <my-button @click="$router.push({ path: '/about' })">О проекте</my-button>
+      <my-button
+        style="margin-right: 15px"
+        @click="$router.push({ path: '/about' })"
+        >О проекте</my-button
+      >
+      <my-button @click="$router.push({ path: '/store' })">Store</my-button>
     </div>
   </div>
 </template>
