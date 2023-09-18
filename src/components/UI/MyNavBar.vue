@@ -12,7 +12,14 @@
         @click="$router.push({ path: '/about' })"
         >О проекте</my-button
       >
-      <my-button @click="$router.push({ path: '/store' })">Store</my-button>
+      <my-button
+        style="margin-right: 15px"
+        @click="$router.push({ path: '/store' })"
+        >Store</my-button
+      >
+      <my-button @click="$router.push({ path: '/composition' })"
+        >Composition</my-button
+      >
     </div>
   </div>
 </template>
